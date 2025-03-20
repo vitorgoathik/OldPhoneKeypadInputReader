@@ -112,7 +112,7 @@ public class OldPhonePad
 
         // 5: handling edge case with the number '0' and '1' (no characters associated with them)
         Console.WriteLine(OldPhonePadMethod("00#")); // Output: " "
-                                                        // '0' doesn't map to any letters.
+        // '0' doesn't map to any letters.
 
         // 6: Pressing '7' and cycling through all possible letters (PQRS)
         Console.WriteLine(OldPhonePadMethod("7777#")); // Output: "S"
