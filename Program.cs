@@ -22,12 +22,13 @@ public class OldPhonePad
         StringBuilder currentInput = new StringBuilder();
         char lastKey = '\0';
 
-        input = input.TrimEnd('#');
+        input = input.TrimEnd('#'); // ends on #
 
         for (int i = 0; i < input.Length; i++)
         {
             char currentChar = input[i];
 
+            // space
             if (currentChar == ' ')
             {
                 if (currentInput.Length > 0)
@@ -36,6 +37,19 @@ public class OldPhonePad
                     currentInput.Clear();
                 }
                 lastKey = '\0';
+            }
+
+            // backspace
+            else if (currentChar == '*')
+            {
+                if (currentInput.Length > 0)
+                {
+                    currentInput.Length--;
+                }
+                else
+                {
+                    result.Length--;
+                }
             }
             else
             {
@@ -86,18 +100,19 @@ public class OldPhonePad
         return letters[pressCount % letters.Length];
     }
 
+    // Main function to test the method
     public static void Main(string[] args)
     {
         Console.WriteLine(OldPhonePadMethod("33#"));              // Output: e
         Console.WriteLine(OldPhonePadMethod("227*#"));            // Output: b
         Console.WriteLine(OldPhonePadMethod("4433555 555666#"));  // Output: hello
-        Console.WriteLine(OldPhonePadMethod("8 88777444666*664#")); // Output: ????? 
+        Console.WriteLine(OldPhonePadMethod("8 88777444666*664#")); // Output: TURING 
 
         // more test cases
 
         // 5: handling edge case with the number '0' and '1' (no characters associated with them)
         Console.WriteLine(OldPhonePadMethod("00#")); // Output: " "
-        // '0' doesn't map to any letters.
+                                                        // '0' doesn't map to any letters.
 
         // 6: Pressing '7' and cycling through all possible letters (PQRS)
         Console.WriteLine(OldPhonePadMethod("7777#")); // Output: "S"
@@ -114,5 +129,8 @@ public class OldPhonePad
         // 10: lorem ipsum text
         Console.WriteLine(OldPhonePadMethod("555 666 777 33 6 0 444 7 7777 88 6 0 3 666 555 666 777#"));
         // Output: "Lorem ipsum dolor"
+
+        // 11: another one with backspace
+        Console.WriteLine(OldPhonePadMethod("22777*22#")); // Output: "BQB"
     }
 }
