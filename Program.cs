@@ -19,6 +19,7 @@ public class OldPhonePad
     public static string OldPhonePadMethod(string input)
     {
         StringBuilder result = new StringBuilder();
+        StringBuilder currentInput = new StringBuilder();
         char lastKey = '\0';
 
         input = input.TrimEnd('#');
@@ -27,24 +28,37 @@ public class OldPhonePad
         {
             char currentChar = input[i];
 
-            if (currentChar == lastKey)
+            if (currentChar == ' ')
             {
-                result.Append(currentChar);
+                if (currentInput.Length > 0)
+                {
+                    result.Append(MapKeys(currentInput.ToString()));
+                    currentInput.Clear();
+                }
+                lastKey = '\0';
             }
             else
             {
-                if (result.Length > 0)
+                if (currentChar == lastKey)
                 {
-                    result.Append(MapKeys(result.ToString()));
-                    result.Clear();
+                    currentInput.Append(currentChar);
                 }
+                else
+                {
+                    if (currentInput.Length > 0)
+                    {
+                        result.Append(MapKeys(currentInput.ToString()));
+                        currentInput.Clear();
+                    }
+                    currentInput.Append(currentChar);
+                }
+                lastKey = currentChar;
             }
-            lastKey = currentChar;
         }
 
-        if (result.Length > 0)
+        if (currentInput.Length > 0)
         {
-            result.Append(MapKeys(result.ToString()));
+            result.Append(MapKeys(currentInput.ToString()));
         }
 
         return result.ToString();
@@ -69,14 +83,14 @@ public class OldPhonePad
             return letters[pressCount - 1];
         }
 
-        return letters[pressCount];
+        return letters[pressCount % letters.Length];
     }
 
     public static void Main(string[] args)
     {
         Console.WriteLine(OldPhonePadMethod("33#"));              // Output: e
-        //Console.WriteLine(OldPhonePadMethod("227*#"));            // Output: b
-        //Console.WriteLine(OldPhonePadMethod("4433555 555666#"));  // Output: hello
-        //Console.WriteLine(OldPhonePadMethod("8 88777444666*664#")); // Output: ????? 
+        Console.WriteLine(OldPhonePadMethod("227*#"));            // Output: b
+        Console.WriteLine(OldPhonePadMethod("4433555 555666#"));  // Output: hello
+        Console.WriteLine(OldPhonePadMethod("8 88777444666*664#")); // Output: ????? 
     }
 }
