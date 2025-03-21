@@ -2,6 +2,7 @@
 using System.Text;
 public static class OldPhonePad
 {
+    // key  mappings for numeric digits on the phone keypad
     private static readonly string[] keyMappings = new string[]
     {
         "",    // when user presses 0
@@ -16,11 +17,14 @@ public static class OldPhonePad
         "WXYZ" // 9
     };
 
+    // main method to process the input string
     public static string OldPhonePadMethod(string input)
     {
         StringBuilder result = new StringBuilder();
+
+        // temp builder to hold the current key sequence being processed
         StringBuilder currentInput = new StringBuilder();
-        char lastKey = '\0';
+        char lastKey = '\0'; // #
 
         input = input.TrimEnd('#'); // ends on #
 
@@ -31,12 +35,8 @@ public static class OldPhonePad
             // space
             if (currentChar == ' ')
             {
-                if (currentInput.Length > 0)
-                {
-                    result.Append(MapKeys(currentInput.ToString()));
-                    currentInput.Clear();
-                }
-                lastKey = '\0';
+                MoveInputToResult(currentInput, result);
+                lastKey = '\0'; // reset sequence
             }
 
             // backspace
@@ -44,10 +44,12 @@ public static class OldPhonePad
             {
                 if (currentInput.Length > 0)
                 {
+                    // something in the current sequence so remove the last character from the sequence
                     currentInput.Length--;
                 }
                 else
                 {
+                    // otherwise remove the last character from the result
                     result.Length--;
                 }
             }
@@ -55,48 +57,58 @@ public static class OldPhonePad
             {
                 if (currentChar == lastKey)
                 {
+                    // a same key was pressed consecutively, add it
                     currentInput.Append(currentChar);
                 }
                 else
                 {
-                    if (currentInput.Length > 0)
-                    {
-                        result.Append(MapKeys(currentInput.ToString()));
-                        currentInput.Clear();
-                    }
-                    currentInput.Append(currentChar);
+                    MoveInputToResult(currentInput, result);
+                    currentInput.Append(currentChar); // start a new sequence with the current key
                 }
-                lastKey = currentChar;
+                lastKey = currentChar; // update lastKey to the current key
             }
         }
 
         if (currentInput.Length > 0)
         {
+            // for remaining characters in currentInput
             result.Append(MapKeys(currentInput.ToString()));
         }
 
-        return result.ToString();
-    }
+        return result.ToString(); // final result
 
-    private static char MapKeys(string sequence)
-    {
-        if (string.IsNullOrEmpty(sequence)) return ' ';
-
-        char key = sequence[0];
-
-        if (key == '0' || key == '1') return ' ';
-
-        int keyNumber = key - '0';
-        if (keyNumber < 2 || keyNumber > 9) return ' ';
-
-        int pressCount = sequence.Length;
-        string letters = keyMappings[keyNumber];
-
-        if (pressCount <= letters.Length)
+        static void MoveInputToResult(StringBuilder currentInput, StringBuilder result)
         {
-            return letters[pressCount - 1];
+            if (currentInput.Length > 0)
+            {
+                // contains a sequence.
+                result.Append(MapKeys(currentInput.ToString())); // map it to the corresponding character
+                currentInput.Clear(); // and clear
+            }
         }
 
-        return letters[pressCount % letters.Length];
+        static char MapKeys(string sequence)
+        {
+            if (string.IsNullOrEmpty(sequence)) return ' ';
+
+            char key = sequence[0];
+
+            if (key == '0' || key == '1') return ' ';
+
+            int keyNumber = key - '0'; // make the char int type
+            if (keyNumber < 2 || keyNumber > 9) return ' ';
+
+            int pressCount = sequence.Length;
+            string letters = keyMappings[keyNumber];
+
+            if (pressCount <= letters.Length)
+            {
+                return letters[pressCount - 1]; // the actual mapping for 2-9 numeric keys
+            }
+
+            // If the presses exceed the number of letters ( like pressing '2' five times),
+            //  cycle through the available letters only
+            return letters[pressCount % letters.Length];
+        }
     }
 }
