@@ -42,5 +42,5 @@ git clone https://github.com/yourusername/OldPhoneKeypad.git
 
 1 - Open the project in Visual Studio or your preferred C# editor.
 
-2 - Run it as is or add your own test cases in the main method of program.cs.
+2 - Run unit tests as is or add your own test cases in the OldPhoneKeypadInputReaderTests project.
 
